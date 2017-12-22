@@ -32,14 +32,14 @@ function main() {
         _req_opt.headers = req.headers;
         _req_opt.headers['proxy-connection'] = 'Keep-Alive';
 
-        console.log(JSON.stringify(_req_opt, null, '  '));
+        //console.log(JSON.stringify(_req_opt, null, '  '));
 
         var _req = http.request(_req_opt, function (_res) {
 
             res.writeHead(_res.statusCode, _res.headers);
 
             _res.on('data', function (buf) {
-                console.log('<<<<' + (Date.t = new Date()) + '.' + Date.t.getMilliseconds() + '\n' + buf.toString('ascii'));
+                //console.log('<<<<' + (Date.t = new Date()) + '.' + Date.t.getMilliseconds() + '\n' + buf.toString('ascii'));
                 res.write(buf)
             }).on('end', function () {
                 res.end();
@@ -56,7 +56,7 @@ function main() {
         });
 
         req.on('data', function (buf) {
-            console.log('>>>>' + (Date.t = new Date()) + '.' + Date.t.getMilliseconds() + '\n' + buf.toString('ascii'));
+            //console.log('>>>>' + (Date.t = new Date()) + '.' + Date.t.getMilliseconds() + '\n' + buf.toString('ascii'));
             _req.write(buf);
         }).on('end', function () {
             _req.end();
