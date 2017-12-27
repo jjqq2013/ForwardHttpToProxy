@@ -4,13 +4,14 @@ var http = require('http');
 function main() {
     //convert `-key value` to cfg[key]=value
     var cfg = process.argv.slice(2/*skip ["node", "xxx.js"]*/).reduce(function (cfg, arg, i, argv) {
-        return (i % 2 === 0 && (arg.slice(0, 2) === '--' && (cfg[arg.slice(2)] = argv[i + 1])), cfg);
+        return (i % 2 === 0 && (arg.slice(0, 2) === '--' && (cfg[arg.slice(2).replace(/-/g, '_')] = argv[i + 1])), cfg);
     }, {local_host: '127.0.0.1', local_port: 0, remote_host: '', remote_port: 0});
 
     var local_host = cfg.local_host;
     var local_port = cfg.local_port;
     var remote_host = cfg.remote_host;
     var remote_port = cfg.remote_port;
+    var verbose = cfg['verbose'];
 
     if (!cfg.local_host || !cfg.local_port || !cfg.remote_host || !cfg.remote_port)
         return console.error('Usage of parameters:\n'
@@ -18,6 +19,7 @@ function main() {
             + '--local_port port\t' + 'Listening port\n'
             + '--remote_host host\t' + 'Real HTTP proxy server address\n'
             + '--remote_port port\t' + 'Real HTTP proxy server port\n'
+            + '--verbose 1\t' + 'Show connection info\n'
         );
     console.log('Using parameters: ' + JSON.stringify(cfg, null, '  '));
 
@@ -32,7 +34,7 @@ function main() {
         _req_opt.headers = req.headers;
         _req_opt.headers['proxy-connection'] = 'Keep-Alive';
 
-        //console.log(JSON.stringify(_req_opt, null, '  '));
+        verbose && console.log(JSON.stringify(_req_opt));
 
         var _req = http.request(_req_opt, function (_res) {
 
